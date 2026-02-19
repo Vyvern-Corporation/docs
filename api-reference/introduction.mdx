@@ -1,33 +1,31 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: 'API reference'
+description: 'Vyvern backend server API documentation.'
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+This section documents Vyvern's backend server API ("SAPI") routes and middleware.
 
-## Welcome
+Use these pages for the authoritative request and response shapes for the API used by the Vyvern frontend and internal tooling.
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+## Quick start
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+- Start at [Backend API overview](backend/overview) for base URL, auth, and shared behavior.
+- Review [Middleware](backend/middleware) to understand auth and org scoping.
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+Most endpoints require a bearer token.
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+```
+Authorization: Bearer <token>
+```
+
+If you need employee-only access, use employee tokens from `POST /api/employees/login` or `POST /api/employees/setup`.
+
+## Organization scoping
+
+Some routes accept `X-Organization-Id` to select a specific org.
+
+```
+X-Organization-Id: <organization-id>
 ```

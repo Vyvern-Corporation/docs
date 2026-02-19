@@ -1,0 +1,181 @@
+---
+title: 'MSP routes'
+description: 'Managed service provider registration, org management, profile, and employees.'
+---
+
+These routes live under `/api/msp` and require the authenticated user to have `userType = MSP` for most operations.
+
+## Authentication
+
+### POST /api/msp/register
+
+Create an MSP user account and return a JWT.
+
+Auth: none.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `email` | string | yes | MSP user email. |
+| `password` | string | yes | MSP user password. |
+| `name` | string | no | Display name. |
+| `betaCode` | string | no | Accepted in the body but not validated. |
+
+### POST /api/msp/login
+
+Log in an MSP user and return a JWT.
+
+Auth: none.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `email` | string | yes | MSP user email. |
+| `password` | string | yes | MSP user password. |
+
+### GET /api/msp/me
+
+Get the current MSP profile.
+
+Auth: `auth` middleware.
+
+## MSP organizations
+
+### GET /api/msp/organizations
+
+List organizations managed by the MSP.
+
+Auth: `auth` middleware.
+
+### POST /api/msp/organizations
+
+Create a new organization and assign the MSP as manager.
+
+Auth: `auth` middleware.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `name` | string | yes | Organization name. |
+| `websiteUrl` | string | no | Website URL. |
+| `userCount` | number | no | Employee count. |
+| `hrmPlatform` | string | no | HRM platform name. |
+| `solutionTypes` | array | no | Solution types list. |
+| `hasSocialPresence` | boolean | no | Social presence flag. |
+
+### POST /api/msp/organizations/search
+
+Search for admin-owned organizations by admin email.
+
+Auth: `auth` middleware.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `adminEmail` | string | yes | Admin email to search by. |
+
+### POST /api/msp/organizations/:orgId/takeover
+
+Transfer an admin-owned organization to MSP management.
+
+Auth: `auth` middleware.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `adminEmail` | string | yes | Admin email for verification. |
+| `transferCode` | string | yes | Currently validated against `TRANSFER2024`. |
+
+### POST /api/msp/organizations/:orgId/switch
+
+Switch the active organization context for the MSP.
+
+Auth: `auth` middleware.
+
+## MSP profile
+
+### PUT /api/msp/profile
+
+Update MSP profile fields.
+
+Auth: `auth` middleware.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `name` | string | no | Display name. |
+| `companyName` | string | no | Company name. |
+| `companyWebsite` | string | no | Company website. |
+| `companyDescription` | string | no | Company description. |
+| `contactPhone` | string | no | Phone number. |
+| `contactAddress` | string | no | Address. |
+
+### POST /api/msp/logo
+
+Upload a logo to Cloudflare Images.
+
+Auth: `auth` middleware.
+
+Content type: `multipart/form-data`.
+
+Form fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `logo` | file | yes | Image file. JPEG, JPG, PNG, or GIF. Max 2MB. |
+
+## MSP employees
+
+### GET /api/msp/employees
+
+List MSP employees.
+
+Auth: `auth` middleware.
+
+### POST /api/msp/employees
+
+Create an MSP employee.
+
+Auth: `auth` middleware.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `firstName` | string | yes | First name. |
+| `lastName` | string | yes | Last name. |
+| `email` | string | yes | Email. |
+| `phone` | string | no | Phone number. |
+| `position` | string | yes | Position. |
+| `department` | string | yes | Department. |
+| `role` | string | no | Defaults to `employee`. |
+
+### PUT /api/msp/employees/:employeeId
+
+Update an MSP employee.
+
+Auth: `auth` middleware.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `firstName` | string | no | First name. |
+| `lastName` | string | no | Last name. |
+| `email` | string | no | Email. |
+| `phone` | string | no | Phone number. |
+| `position` | string | no | Position. |
+| `department` | string | no | Department. |
+| `role` | string | no | Role. |
+
+### DELETE /api/msp/employees/:employeeId
+
+Delete an MSP employee.
+
+Auth: `auth` middleware.

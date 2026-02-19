@@ -1,0 +1,67 @@
+---
+title: 'Backend API overview'
+description: 'Base URL, auth, headers, and shared behavior for the Vyvern server API.'
+---
+
+This section documents Vyvern's backend server API ("SAPI") routes and middleware. The API is served by the Express app in `backend/server.js`.
+
+## Base URL
+
+Use the host and port where you run the backend service.
+
+- Default dev port: `http://localhost:5000` (set by `PORT` in `backend/server.js`).
+- OAuth callbacks use `API_URL` and default to `http://localhost:3001` in `backend/config/oauth.js`.
+
+If your OAuth callbacks do not match your running port, update `API_URL` to the same base URL you use for the backend server.
+
+## Authentication
+
+Most routes require a JWT in the `Authorization` header.
+
+- Header: `Authorization: Bearer <token>`
+- Standard user tokens contain `userId`.
+- Employee tokens contain `employeeId`.
+
+You obtain tokens from:
+
+- `POST /api/auth/login`
+- `POST /api/msp/login`
+- `POST /api/employees/login`
+- `POST /api/employees/setup`
+
+## Organization scoping
+
+Some routes use an organization context.
+
+- Header: `X-Organization-Id` selects an organization when the user has multiple orgs.
+- Query: Some routes require `organizationId` as a query parameter.
+
+If you pass `X-Organization-Id`, the API verifies that the authenticated user has access to that organization before returning data.
+
+## Request and response formats
+
+- Default content type: `application/json`.
+- File uploads: `multipart/form-data` with a single `logo` file.
+- SSE: `GET /api/organizations/:id/stream` returns `text/event-stream` and uses a `token` query parameter.
+
+Most error responses follow this shape:
+
+```json
+{ "error": "Human readable message" }
+```
+
+## Static assets
+
+The backend serves `/uploads` as a static path for files stored in the `backend/uploads` directory.
+
+## Global middleware behavior
+
+The server applies these global middleware before route handlers:
+
+- `helmet` for security headers.
+- `cors` with an allowlist and credentials enabled.
+- `morgan` for request logging.
+- `express.json()` and `express.urlencoded()` for body parsing.
+- `express-session` and Passport for OAuth flows.
+
+See `middleware` for details about the auth and employee auth middleware.

@@ -1,0 +1,121 @@
+---
+title: 'Dev routes'
+description: 'Developer tools for AI, embeddings, and job testing.'
+---
+
+These routes live under `/api/dev` and are intended for development and debugging. All routes require `auth` middleware.
+
+## Proposals
+
+### GET /api/dev/proposals
+
+List `DRAFT` and `PENDING` proposals for the selected organization.
+
+### DELETE /api/dev/proposals/:proposalId
+
+Delete a proposal in `DRAFT` or `PENDING` status.
+
+## AI diagnostics
+
+### GET /api/dev/ai/test-connections
+
+Test OpenAI and Pinecone connections.
+
+### GET /api/dev/ai/recommendations/:organizationId
+
+Get AI recommendations for an organization.
+
+### POST /api/dev/ai/generate-test-proposal
+
+Generate a test proposal.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `organizationId` | string | yes | Organization ID. |
+| `workflowType` | string | no | Defaults to `SOCIAL_ENGINEERING`. |
+| `priority` | string | no | Defaults to `MEDIUM`. |
+
+### POST /api/dev/ai/generate-execution-plan
+
+Generate an execution plan for a workflow.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `workflowId` | string | yes | Workflow ID. |
+
+## Embeddings
+
+### POST /api/dev/embeddings/create
+
+Create embeddings for an organization.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `organizationId` | string | yes | Organization ID. |
+
+### POST /api/dev/embeddings/update
+
+Update embeddings for an organization.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `organizationId` | string | yes | Organization ID. |
+
+### POST /api/dev/embeddings/clear
+
+Delete embeddings for an organization.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `organizationId` | string | yes | Organization ID. |
+
+### GET /api/dev/embeddings/status/:organizationId
+
+Get embedding status and metadata.
+
+### GET /api/dev/embeddings/similar-orgs/:organizationId
+
+Get similar organizations.
+
+Query parameters:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `topK` | number | no | Defaults to `5`. |
+
+### GET /api/dev/embeddings/similar-workflows/:organizationId
+
+Get similar workflows for proposal creation.
+
+Query parameters:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `workflowType` | string | no | Workflow type filter. |
+| `topK` | number | no | Defaults to `3`. |
+
+### POST /api/dev/embeddings/batch-update
+
+Batch update embeddings for multiple organizations.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `organizationIds` | array | yes | List of organization IDs. |
+
+## Jobs
+
+### POST /api/dev/jobs/run-auto-gen
+
+Run the proposal auto-generation job manually.

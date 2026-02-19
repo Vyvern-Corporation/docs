@@ -1,0 +1,119 @@
+---
+title: 'Training routes'
+description: 'Training content, assignments, records, and recommendations.'
+---
+
+These routes live under `/api/training` and require `auth` middleware.
+
+## Training records
+
+### GET /api/training/records
+
+List training records for an organization.
+
+Query parameters:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `organizationId` | string | yes | Organization ID. |
+
+### GET /api/training/records/:id
+
+Get a single training record.
+
+### POST /api/training/records
+
+Create a training record.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `organizationId` | string | yes | Organization ID. |
+| `trainingContentId` | string | no | Training content ID. |
+| `employeeId` | string | no | Employee ID. |
+| `dueDate` | string | no | ISO date string. |
+| `assignedBy` | string | no | User ID; defaults to `req.user.id`. |
+| `relatedWorkflowId` | string | no | Related workflow ID. |
+| `failureReplay` | object | no | Failure replay data. |
+
+### PUT /api/training/records/:id
+
+Update a training record for progress tracking.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `status` | string | no | Training status. |
+| `startedAt` | string | no | ISO date string. |
+| `completedAt` | string | no | ISO date string. |
+| `timeSpent` | number | no | Time spent in seconds. |
+| `progressData` | object | no | Progress details. |
+| `score` | number | no | Score for attempt tracking. |
+| `performanceData` | object | no | Performance metrics. |
+
+### DELETE /api/training/records/:id
+
+Delete a training record.
+
+## Training content
+
+### GET /api/training/content
+
+List training content. Supports filters.
+
+Query parameters:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `category` | string | no | Filter by category. |
+| `isActive` | boolean | no | Filter by active status. |
+
+### POST /api/training/content
+
+Create training content.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `contentId` | string | yes | Unique content ID. |
+| `title` | string | yes | Title. |
+| `description` | string | no | Description. |
+| `category` | string | yes | Category. |
+| `contentType` | string | yes | Content type. |
+| `contentData` | object | yes | Content payload. |
+| `failureExamples` | array | no | Failure examples. |
+| `guidelines` | array | no | Training guidelines. |
+| `difficulty` | string | no | Defaults to `MEDIUM`. |
+| `estimatedTime` | number | no | Estimated time in minutes. |
+
+## Assignments and recommendations
+
+### POST /api/training/assign-from-failure
+
+Assign training based on a workflow failure.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `employeeId` | string | yes | Employee ID. |
+| `workflowId` | string | yes | Workflow ID. |
+| `organizationId` | string | yes | Organization ID. |
+| `failureData` | object | no | Failure context. |
+
+### GET /api/training/recommendations/:employeeId
+
+Get training recommendations for an employee.
+
+Query parameters:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `organizationId` | string | yes | Organization ID. |
+
+### POST /api/training/update-overdue
+
+Update overdue training records. Designed for cron usage.

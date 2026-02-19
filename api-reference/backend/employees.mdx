@@ -1,0 +1,156 @@
+---
+title: 'Employee routes'
+description: 'Employee invitations, setup, login, and admin management.'
+---
+
+These routes live under `/api/employees`.
+
+## Admin-managed employee lifecycle
+
+### POST /api/employees
+
+Create an employee and send an invitation email.
+
+Auth: `auth` middleware.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `firstName` | string | yes | First name. |
+| `lastName` | string | yes | Last name. |
+| `email` | string | yes | Employee email. |
+| `department` | string | no | Department. |
+| `position` | string | no | Position. |
+
+Response includes an `inviteUrl` built from `FRONTEND_URL`.
+
+### POST /api/employees/bulk
+
+Bulk-create employees from a list and send invitations.
+
+Auth: `auth` middleware.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `employees` | array | yes | Array of employee objects. |
+
+Each employee object supports `firstName`, `lastName`, `email`, `department`, `position`.
+
+### GET /api/employees
+
+List employees for the current user's organization.
+
+Auth: `auth` middleware.
+
+### POST /api/employees/:id/resend-invitation
+
+Resend an invitation email and refresh the token if needed.
+
+Auth: `auth` middleware.
+
+### PATCH /api/employees/:id
+
+Update employee details.
+
+Auth: `auth` middleware.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `firstName` | string | no | First name. |
+| `lastName` | string | no | Last name. |
+| `department` | string | no | Department. |
+| `position` | string | no | Position. |
+| `status` | string | no | `INVITED`, `CONSENT_PENDING`, `ACTIVE`, `INACTIVE`, `SUSPENDED`. |
+
+### PATCH /api/employees/:id/status
+
+Update only the employee status.
+
+Auth: `auth` middleware.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `status` | string | yes | `INVITED`, `CONSENT_PENDING`, `ACTIVE`, `INACTIVE`, `SUSPENDED`. |
+
+## Employee self-service
+
+### GET /api/employees/verify-token/:token
+
+Verify an invitation token.
+
+Auth: none.
+
+### POST /api/employees/setup
+
+Complete account setup after consent and set a password.
+
+Auth: none.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `token` | string | yes | Invitation token. |
+| `password` | string | yes | Password, minimum length 8. |
+| `consentData` | object | yes | Consent metadata. |
+
+The `consentData` object should include `agreed`, `signature`, `ipAddress`, and `userAgent`.
+
+### POST /api/employees/login
+
+Employee login.
+
+Auth: none.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `email` | string | yes | Employee email. |
+| `password` | string | yes | Password. |
+
+### GET /api/employees/me
+
+Get the current employee profile.
+
+Auth: `employeeAuth` middleware.
+
+## Password reset
+
+### POST /api/employees/forgot-password
+
+Request a password reset email. This endpoint always returns success to avoid email enumeration.
+
+Auth: none.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `email` | string | yes | Employee email. |
+
+### GET /api/employees/verify-reset-token/:token
+
+Verify a reset token.
+
+Auth: none.
+
+### POST /api/employees/reset-password
+
+Complete a password reset.
+
+Auth: none.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `token` | string | yes | Reset token. |
+| `password` | string | yes | New password, minimum length 8. |

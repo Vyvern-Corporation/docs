@@ -1,0 +1,123 @@
+---
+title: 'Workflow routes'
+description: 'Create, approve, execute, and analyze workflows.'
+---
+
+These routes live under `/api/workflows`.
+
+All routes require `auth` middleware and use the organization context from `X-Organization-Id` when provided.
+
+## GET /api/workflows
+
+List workflows for the current organization.
+
+Query parameters:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `status` | string | no | Filter by workflow status. |
+| `type` | string | no | Filter by workflow type. |
+| `priority` | string | no | Filter by priority. |
+
+Notes:
+
+- If you omit `status`, the API excludes `DRAFT` and `PENDING` workflows by default.
+
+## GET /api/workflows/:id
+
+Get a single workflow by ID.
+
+## POST /api/workflows
+
+Create a new workflow. This typically creates a proposal in `DRAFT` status.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `title` | string | yes | Workflow title. |
+| `workflowType` | string | yes | Workflow type. |
+| `workflowData` | object | yes | Must include a `phases` array. |
+| `description` | string | no | Description. |
+| `priority` | string | no | Defaults to `MEDIUM`. |
+| `proposedBy` | string | no | Defaults to `AI_AGENT`. |
+
+## PUT /api/workflows/:id
+
+Update workflow fields and status.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `status` | string | no | Updates status and timestamps. |
+| `title` | string | no | Title override. |
+| `description` | string | no | Description override. |
+| `priority` | string | no | Priority override. |
+| `workflowData` | object | no | Workflow data override. |
+| `executionResults` | object | no | Execution results payload. |
+| `rejectionReason` | string | no | Used when setting status to `REJECTED`. |
+
+## POST /api/workflows/:id/approve
+
+Approve a `DRAFT` or `PENDING` workflow and optionally start it.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `conditions` | object | no | Approval conditions. |
+| `autoStart` | boolean | no | Defaults to `true`. |
+
+## POST /api/workflows/:id/reject
+
+Reject a `DRAFT` or `PENDING` workflow.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `reason` | string | yes | Rejection reason. |
+
+## POST /api/workflows/:id/start
+
+Start execution for an `APPROVED` workflow.
+
+## POST /api/workflows/:id/pause
+
+Pause an `ACTIVE` workflow.
+
+## POST /api/workflows/:id/resume
+
+Resume a `PAUSED` workflow.
+
+## GET /api/workflows/stats/summary
+
+Return workflow counts by status for the organization.
+
+## DELETE /api/workflows/:id
+
+Delete a workflow in `DRAFT` status only.
+
+## POST /api/workflows/generate-proposal
+
+Generate an AI workflow proposal for the organization.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `proposalType` | string | yes | `market_analysis`, `process_improvement`, or `technology_audit`. |
+| `targetCompany` | string | yes | Target company name. |
+| `competitors` | array | no | Competitor names. |
+| `focusArea` | string | no | Focus area. |
+| `currentTech` | string | no | Current tech stack notes. |
+| `priority` | string | no | Defaults to `MEDIUM`. |
+
+## GET /api/workflows/:id/proposal-status
+
+Return proposal generation status. This endpoint currently always reports `completed`.
+
+## POST /api/workflows/initialize-employee-research
+
+Create an initial employee research proposal for a new organization when no workflows exist.

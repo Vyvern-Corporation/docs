@@ -1,0 +1,60 @@
+---
+title: 'Middleware'
+description: 'Auth, employee auth, and server-level middleware behavior.'
+---
+
+This page covers the middleware that shapes request handling and authorization in the backend service.
+
+## Auth middleware
+
+File: `backend/middleware/auth.js`
+
+Use this middleware to authenticate standard users.
+
+- Reads `Authorization: Bearer <token>`.
+- Verifies the token with `JWT_SECRET`.
+- Sets `req.user` to the decoded payload.
+- If present, reads `X-Organization-Id` and sets `req.selectedOrganizationId`.
+
+Failure behavior:
+
+- Missing token returns `401` with `{ "error": "Access token required" }`.
+- Invalid token returns `401` with `{ "error": "Invalid token" }`.
+
+## Employee auth middleware
+
+File: `backend/middleware/employeeAuth.js`
+
+Use this middleware for employee-only endpoints.
+
+- Reads `Authorization: Bearer <token>`.
+- Verifies the token with `JWT_SECRET`.
+- Requires `employeeId` in the token payload.
+- Loads the employee and its organization from the database.
+- Requires `employee.status === "ACTIVE"`.
+- Sets `req.employee` to the decoded payload plus the employee record.
+
+Failure behavior:
+
+- Missing token returns `401` with `{ "error": "Access token required" }`.
+- Invalid or non-employee token returns `401` with `{ "error": "Invalid employee token" }`.
+- Missing or inactive employee returns `401` with `{ "error": "Employee not found" }` or `{ "error": "Employee account not active" }`.
+
+## Server-level middleware
+
+Configured in `backend/server.js`.
+
+- `helmet()` adds security headers.
+- `cors()` allows credentials and checks an allowlist.
+- `morgan('combined')` logs requests.
+- `express.json()` and `express.urlencoded()` parse request bodies.
+- `express-session` enables OAuth login flows.
+- Passport is initialized for Google OAuth in `/api/auth/google` routes.
+
+## CORS behavior
+
+CORS allowlist is configured in `backend/server.js`.
+
+- Allowed origins: `http://localhost:3000`, `http://localhost:3001`, and `FRONTEND_URL`.
+- In `NODE_ENV=development`, all origins are allowed.
+- Credentials are enabled, and allowed headers include `X-Organization-Id`.

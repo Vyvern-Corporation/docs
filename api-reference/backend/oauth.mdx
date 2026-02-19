@@ -1,0 +1,69 @@
+---
+title: 'OAuth integration routes'
+description: 'Connect and manage third-party integrations.'
+---
+
+These routes live under `/api/oauth`.
+
+Supported platforms are configured in `backend/config/oauth.js`:
+
+- `gmail`
+- `drive`
+- `calendar`
+- `outlook`
+- `teams`
+- `onedrive`
+- `slack`
+
+## GET /api/oauth/:platform/authorize
+
+Start an OAuth flow and return an authorization URL.
+
+Auth: `auth` middleware.
+
+Query parameters:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `organizationId` | string | yes | Organization ID for the integration. |
+
+Response:
+
+- `{ authUrl }`
+
+## GET /api/oauth/:platform/callback
+
+Handle the OAuth provider callback.
+
+Auth: none.
+
+Behavior:
+
+- Exchanges the authorization code for tokens.
+- Fetches user info from the provider.
+- Stores the integration for the organization.
+- Redirects to `FRONTEND_URL` with success or error query parameters.
+
+## GET /api/oauth/integrations
+
+List integrations for an organization.
+
+Auth: `auth` middleware.
+
+Query parameters:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `organizationId` | string | yes | Organization ID. |
+
+## DELETE /api/oauth/:platform/disconnect
+
+Disconnect an integration.
+
+Auth: `auth` middleware.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `organizationId` | string | yes | Organization ID. |

@@ -1,0 +1,28 @@
+---
+title: 'Sales routes'
+description: 'Sales contact intake.'
+---
+
+These routes live under `/api/sales`.
+
+## POST /api/sales/contact
+
+Submit a sales contact request. The backend forwards the request to a Discord webhook.
+
+Auth: none.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `email` | string | yes | Contact email. |
+| `name` | string | yes | Contact name. |
+| `role` | string | yes | Contact role. |
+| `hrmSolution` | string | no | Current HRM solution. |
+| `companyName` | string | no | Company name. |
+| `phoneNumber` | string | no | Phone number. |
+| `availability` | string | no | Availability details. |
+
+Response:
+
+- `200` with `{ message, success: true }` on success.

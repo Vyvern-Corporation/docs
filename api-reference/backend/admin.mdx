@@ -1,0 +1,309 @@
+---
+title: 'Admin routes'
+description: 'Vyvern admin endpoints for users, orgs, workflows, credentials, and jobs.'
+---
+
+These routes live under `/api/admin`.
+
+Most endpoints use `auth` middleware plus a route-level `vyvernAdminMiddleware`. The current implementation in `backend/routes/admin.js` does not enforce the admin role check because the role gate is commented out. If you need strict admin enforcement, update that middleware before relying on these endpoints.
+
+## User management
+
+### GET /api/admin/users
+
+Return all users with organization counts.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+### POST /api/admin/mint/msp
+
+Create an MSP user account.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `email` | string | yes | MSP user email. |
+| `password` | string | yes | MSP user password. |
+| `name` | string | no | Display name. |
+| `companyName` | string | no | MSP company name. |
+| `companyWebsite` | string | no | MSP website URL. |
+
+### POST /api/admin/mint/admin
+
+Create an admin user account.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `email` | string | yes | Admin user email. |
+| `password` | string | yes | Admin user password. |
+| `name` | string | no | Display name. |
+
+### POST /api/admin/mint/employee
+
+Create an employee account for testing.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `email` | string | yes | Employee email. |
+| `firstName` | string | yes | First name. |
+| `lastName` | string | yes | Last name. |
+| `organizationId` | string | yes | Target organization ID. |
+| `department` | string | no | Department. |
+| `position` | string | no | Position. |
+
+### DELETE /api/admin/users/:userId
+
+Delete a user by ID. You cannot delete your own account.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+### PATCH /api/admin/users/:userId/role
+
+Update the user role.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `role` | string | yes | `USER` or `VYVERN_ADMIN`. |
+
+### PATCH /api/admin/users/:userId/user-type
+
+Update the user type.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `userType` | string | yes | `ADMIN`, `MSP`, or `EMPLOYEE`. |
+
+### PATCH /api/admin/users/:userId/reset-password
+
+Reset a user password. If you omit `password`, the API returns a generated temporary password.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `password` | string | no | New password. If omitted, a random password is generated. |
+
+## Employee management
+
+### GET /api/admin/employees
+
+Return all employees across organizations.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+### PATCH /api/admin/employees/:id
+
+Update an employee record.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `firstName` | string | no | First name. |
+| `lastName` | string | no | Last name. |
+| `email` | string | no | Email. |
+| `department` | string | no | Department. |
+| `position` | string | no | Position. |
+| `status` | string | no | Employee status. |
+
+### DELETE /api/admin/employees/:id
+
+Delete an employee.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+### PATCH /api/admin/employees/:id/reset-password
+
+Reset an employee password and activate the account when applicable.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `password` | string | yes | New password, minimum length 8. |
+
+## Organization management
+
+### GET /api/admin/organizations
+
+Return all organizations.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+### PATCH /api/admin/organizations/:id
+
+Update organization details.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `name` | string | no | Organization name. |
+| `websiteUrl` | string | no | Website URL. |
+| `userCount` | number | no | Employee count. |
+| `hrmPlatform` | string | no | HRM platform name. |
+| `hasSocialPresence` | boolean | no | Social presence flag. |
+| `solutionTypes` | array | no | Solution types list. |
+| `description` | string | no | Description text. |
+| `primaryColor` | string | no | Hex color. |
+| `secondaryColor` | string | no | Hex color. |
+
+### PATCH /api/admin/organizations/:id/owner
+
+Assign an organization owner.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `userId` | string | yes | New owner user ID. |
+
+### DELETE /api/admin/organizations/:organizationId/wipe-data
+
+Wipe all workflow and embedding data for an organization.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+## Ghost controls for workflows
+
+### POST /api/admin/workflows
+
+Create a workflow for any organization.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `title` | string | yes | Workflow title. |
+| `workflowType` | string | yes | Workflow type. |
+| `workflowData` | object | yes | Must include `phases` array. |
+| `organizationId` | string | yes | Target organization ID. |
+| `description` | string | no | Description. |
+| `priority` | string | no | Defaults to `MEDIUM`. |
+
+### GET /api/admin/workflows
+
+List workflows across organizations. Supports `status` and `search` query parameters.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+### GET /api/admin/workflows/:id
+
+Get a single workflow.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+### PATCH /api/admin/workflows/:id/ghost
+
+Patch workflow data in ghost mode.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `title` | string | no | Updated title. |
+| `description` | string | no | Updated description. |
+| `workflowData` | object | no | New workflow data. |
+| `executionResults` | object | no | Partial execution results to merge. |
+| `status` | string | no | Workflow status. |
+| `ghostNote` | string | no | Note stored in execution results. |
+
+## Proposal auto-generation
+
+### POST /api/admin/proposals/auto-generate/:organizationId
+
+Force auto-generate proposals for a specific organization.
+
+Auth: `auth` only. This endpoint does not use `vyvernAdminMiddleware`.
+
+## MCP credentials management
+
+These endpoints manage encrypted credentials for MCP integrations. They require `MCP_CREDENTIALS_KEY` and write to `MCP_CREDENTIALS_FILE`.
+
+### GET /api/admin/credentials
+
+Return all stored credentials with redacted secrets.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+### GET /api/admin/credentials/:service
+
+Return a stored credential for a service.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+### POST /api/admin/credentials
+
+Create or update a credential entry.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `service` | string | yes | Service identifier. |
+| `username` | string | no | Username. |
+| `password` | string | no | Password. |
+| `token` | string | no | API token. |
+| `totpSecret` | string | no | TOTP secret or otpauth URL. |
+| `meta` | object | no | Extra metadata. |
+
+### POST /api/admin/credentials/:service/totp
+
+Generate a TOTP code for a stored credential.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+### DELETE /api/admin/credentials/:service
+
+Delete a stored credential.
+
+Auth: `auth` + `vyvernAdminMiddleware`.
+
+## Jobs dashboard
+
+### GET /api/admin/jobs
+
+Render an HTML dashboard of cron jobs and organization stats.
+
+Auth: HTTP Basic Auth using `ADMIN_DASHBOARD_USERNAME` and `ADMIN_DASHBOARD_PASSWORD`. Defaults to `admin` / `vyvern2024`.
+
+### GET /api/admin/jobs/status
+
+Return JSON status for scheduled jobs.
+
+Auth: `auth` middleware.

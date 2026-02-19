@@ -1,0 +1,106 @@
+---
+title: 'Auth routes'
+description: 'User registration, login, profile, and Google OAuth.'
+---
+
+These routes live under `/api/auth` and handle standard user authentication.
+
+## POST /api/auth/register
+
+Create a standard user account and return a JWT.
+
+Auth: none.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `email` | string | yes | User email address. |
+| `password` | string | yes | Plaintext password. |
+| `name` | string | no | Display name. |
+| `betaCode` | string | yes | Beta access code. |
+
+Response:
+
+- `201` with `{ message, token, user }` on success.
+- `400` for missing fields or existing user.
+- `403` for invalid beta code.
+
+Notes:
+
+- The current beta code check in `backend/routes/auth.js` uses `betaCode !== "MainlineHealth" || betaCode !== "Kunda"`, which rejects all values. Verify this logic before using the endpoint in production.
+
+## POST /api/auth/login
+
+Log in a standard user and return a JWT.
+
+Auth: none.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `email` | string | yes | User email address. |
+| `password` | string | yes | Plaintext password. |
+
+Response:
+
+- `200` with `{ message, token, user }` on success.
+- `401` for invalid credentials.
+
+## GET /api/auth/me
+
+Get the current user profile.
+
+Auth: `auth` middleware.
+
+Response:
+
+- `200` with user profile fields including `userType`, `role`, `provider`, `createdAt`.
+- `404` if the user no longer exists.
+
+## PUT /api/auth/change-password
+
+Change the current user's password.
+
+Auth: `auth` middleware.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `currentPassword` | string | yes | Current password. |
+| `newPassword` | string | yes | New password, minimum length 6. |
+
+Response:
+
+- `200` with `{ message }` on success.
+- `401` if the current password is incorrect.
+
+## GET /api/auth/google
+
+Start Google OAuth for Vyvern staff accounts.
+
+Auth: none. Uses Passport Google strategy.
+
+Behavior:
+
+- Redirects the user to Google OAuth.
+- Requests `profile` and `email` scopes.
+
+## GET /api/auth/google/callback
+
+Handle the Google OAuth callback and redirect to the frontend.
+
+Auth: none. Uses Passport Google strategy.
+
+Behavior:
+
+- Only allows emails ending in `@vyvern.com`.
+- Creates or updates a user with `role = VYVERN_ADMIN`.
+- Redirects to `FRONTEND_URL` with `token` in the query string.
+
+Response:
+
+- Redirects to `FRONTEND_URL/auth/callback?token=...` on success.
+- Redirects to `/login?error=oauth_failed` on failure.

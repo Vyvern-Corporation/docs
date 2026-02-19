@@ -57,6 +57,23 @@
             ]
           },
           {
+            "group": "Vyvern backend",
+            "pages": [
+              "api-reference/backend/overview",
+              "api-reference/backend/middleware",
+              "api-reference/backend/auth",
+              "api-reference/backend/admin",
+              "api-reference/backend/msp",
+              "api-reference/backend/organizations",
+              "api-reference/backend/employees",
+              "api-reference/backend/workflows",
+              "api-reference/backend/training",
+              "api-reference/backend/oauth",
+              "api-reference/backend/sales",
+              "api-reference/backend/dev"
+            ]
+          },
+          {
             "group": "Endpoint examples",
             "pages": [
               "api-reference/endpoint/get",

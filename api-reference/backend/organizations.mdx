@@ -1,0 +1,132 @@
+---
+title: 'Organization routes'
+description: 'Create, manage, and brand organizations.'
+---
+
+These routes live under `/api/organizations`.
+
+## POST /api/organizations
+
+Create an organization owned by the current user.
+
+Auth: `auth` middleware.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `organizationName` | string | yes | Organization name. |
+| `userCount` | number | yes | Must be greater than 0. |
+| `hrmPlatform` | string | yes | HRM platform name. |
+| `solutionTypes` | array | yes | Allowed values: `email-phishing`, `corporate-espionage`, `insider-risk`, `nation-state`. |
+| `hasSocialPresence` | boolean | yes | Social presence flag. |
+| `websiteUrl` | string | no | Website URL. |
+| `authorizedPlatforms` | array | no | OAuth platforms to pre-authorize. |
+
+Response:
+
+- Returns `predictiveBilling` totals based on `userCount`.
+
+## GET /api/organizations/:id/status
+
+Get research status for an organization.
+
+Auth: `auth` middleware.
+
+## GET /api/organizations/me
+
+Return the current user's organization. If `X-Organization-Id` is provided, the API returns that org after access verification. Otherwise, it returns the most recently created org.
+
+Auth: `auth` middleware.
+
+## GET /api/organizations
+
+List all organizations for the current user.
+
+Auth: `auth` middleware.
+
+## GET /api/organizations/:id/stream
+
+Stream organization research progress via SSE.
+
+Auth: none. Provide a JWT via `token` query parameter because `EventSource` does not send custom headers.
+
+Query parameters:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `token` | string | yes | JWT for the organization owner. |
+
+Behavior:
+
+- Responds with `text/event-stream`.
+- Sends `progress` and `complete` events with research metadata.
+- Ends when status is `completed` or `failed`.
+
+## GET /api/organizations/:id/settings
+
+Get organization branding settings.
+
+Auth: `auth` middleware.
+
+## PUT /api/organizations/:id/settings
+
+Update organization branding settings.
+
+Auth: `auth` middleware.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `name` | string | no | Organization name. |
+| `description` | string | no | Description. |
+| `primaryColor` | string | no | Hex color. |
+| `secondaryColor` | string | no | Hex color. |
+| `websiteUrl` | string | no | Website URL. |
+
+## POST /api/organizations/:id/logo
+
+Upload a logo to Cloudflare Images.
+
+Auth: `auth` middleware.
+
+Content type: `multipart/form-data`.
+
+Form fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `logo` | file | yes | Image file. Max 5MB. |
+
+## DELETE /api/organizations/:id/logo
+
+Delete the organization's logo from Cloudflare Images.
+
+Auth: `auth` middleware.
+
+## GET /api/organizations/:id/auto-generation-settings
+
+Get auto-generation settings for workflow proposals.
+
+Auth: `auth` middleware.
+
+## PUT /api/organizations/:id/auto-generation-settings
+
+Update auto-generation settings.
+
+Auth: `auth` middleware.
+
+Body fields:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `autoGenerationEnabled` | boolean | no | Toggle auto-generation. |
+| `proposalGenerationInterval` | string | no | `hourly`, `every_6_hours`, `daily`, `weekly`. |
+| `proposalGenerationTypes` | array | no | Allowed values: `market_analysis`, `process_improvement`, `technology_audit`, `employee_research`. |
+
+## POST /api/organizations/:id/generate-proposals
+
+Manually trigger proposal generation for an organization.
+
+Auth: `auth` middleware.
