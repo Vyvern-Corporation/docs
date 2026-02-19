@@ -1,0 +1,40 @@
+---
+title: 'MSP operations'
+description: 'Manage organizations and staff as a managed service provider.'
+---
+
+Use this guide if you operate as an MSP account.
+
+## Register and log in
+
+Create an MSP account with `POST /api/msp/register`, then log in with `POST /api/msp/login`.
+
+## Manage organizations
+
+Use these endpoints to manage organizations:
+
+- `GET /api/msp/organizations` to list managed orgs.
+- `POST /api/msp/organizations` to create a new org.
+- `POST /api/msp/organizations/:orgId/switch` to switch active context.
+
+## Take over an admin-owned org
+
+Use these endpoints to move an admin-owned org into MSP management:
+
+- `POST /api/msp/organizations/search` to look up orgs by admin email.
+- `POST /api/msp/organizations/:orgId/takeover` with `adminEmail` and `transferCode`.
+
+## MSP profile and logo
+
+Update profile fields with `PUT /api/msp/profile`.
+
+Upload a logo with `POST /api/msp/logo` using `multipart/form-data` and a `logo` file.
+
+## MSP employees
+
+Use these endpoints to manage MSP staff accounts:
+
+- `GET /api/msp/employees`
+- `POST /api/msp/employees`
+- `PUT /api/msp/employees/:employeeId`
+- `DELETE /api/msp/employees/:employeeId`

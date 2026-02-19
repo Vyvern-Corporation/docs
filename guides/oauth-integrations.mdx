@@ -1,0 +1,41 @@
+---
+title: 'OAuth integrations'
+description: 'Connect and manage third-party OAuth integrations.'
+---
+
+Use this guide to connect third-party services to an organization.
+
+## Supported platforms
+
+The backend supports these `platform` values:
+
+- `gmail`
+- `drive`
+- `calendar`
+- `outlook`
+- `teams`
+- `onedrive`
+- `slack`
+
+## Start the OAuth flow
+
+Call `GET /api/oauth/:platform/authorize` with `organizationId` to receive an `authUrl`.
+
+Redirect the user to that URL to complete the provider consent flow.
+
+## Handle the callback
+
+The backend handles `GET /api/oauth/:platform/callback` automatically. The callback:
+
+- Exchanges the code for tokens.
+- Fetches the provider user profile.
+- Stores the integration for the organization.
+- Redirects to `FRONTEND_URL` with success or error parameters.
+
+## List integrations
+
+Call `GET /api/oauth/integrations?organizationId=...` to fetch integrations for an organization.
+
+## Disconnect integrations
+
+Call `DELETE /api/oauth/:platform/disconnect` with `organizationId` in the body.

@@ -1,0 +1,37 @@
+---
+title: 'Assign training from failure'
+description: 'Example request and response for POST /api/training/assign-from-failure.'
+---
+
+## Request
+
+```bash
+curl -s -X POST http://localhost:5000/api/training/assign-from-failure \
+  -H 'Authorization: Bearer <token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "employeeId":"emp_123",
+    "workflowId":"wf_123",
+    "organizationId":"org_123",
+    "failureData": {
+      "reason": "Phishing simulation click"
+    }
+  }'
+```
+
+## Response
+
+```json
+{
+  "success": true,
+  "assignments": [
+    {
+      "id": "tr_123",
+      "trainingContentId": "phish-101",
+      "employeeId": "emp_123",
+      "status": "ASSIGNED"
+    }
+  ],
+  "message": "Assigned 1 training module(s)"
+}
+```

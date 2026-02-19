@@ -1,0 +1,31 @@
+---
+title: 'Training operations'
+description: 'Manage training content, assignments, and records.'
+---
+
+Use this guide to assign training and track progress.
+
+## Create training content
+
+Call `POST /api/training/content` to create a training module.
+
+Include `contentId`, `title`, `category`, `contentType`, and `contentData`.
+
+## Assign training
+
+There are two assignment flows:
+
+- `POST /api/training/records` for direct assignment.
+- `POST /api/training/assign-from-failure` to assign training after a workflow failure.
+
+## Track progress
+
+Use `PUT /api/training/records/:id` to update progress, score, and completion data.
+
+## Get recommendations
+
+Call `GET /api/training/recommendations/:employeeId` to get recommendations for an employee. Pass `organizationId` as a query parameter.
+
+## Update overdue training
+
+Call `POST /api/training/update-overdue` to mark overdue records. This endpoint is useful in cron jobs.

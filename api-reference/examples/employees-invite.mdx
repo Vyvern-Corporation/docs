@@ -1,0 +1,38 @@
+---
+title: 'Invite an employee'
+description: 'Example request and response for POST /api/employees.'
+---
+
+## Request
+
+```bash
+curl -s -X POST http://localhost:5000/api/employees \
+  -H 'Authorization: Bearer <token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "firstName":"Riley",
+    "lastName":"Nguyen",
+    "email":"riley@acme.example",
+    "department":"Finance",
+    "position":"Analyst"
+  }'
+```
+
+## Response
+
+```json
+{
+  "message": "Employee created successfully",
+  "employee": {
+    "id": "emp_123",
+    "firstName": "Riley",
+    "lastName": "Nguyen",
+    "email": "riley@acme.example",
+    "department": "Finance",
+    "position": "Analyst",
+    "status": "INVITED",
+    "createdAt": "2026-02-19T18:00:00.000Z"
+  },
+  "inviteUrl": "http://localhost:3000/employee/setup?token=<invite-token>"
+}
+```

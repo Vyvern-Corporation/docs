@@ -1,0 +1,51 @@
+---
+title: 'Auth and org scoping'
+description: 'Authenticate with JWTs and select an organization context.'
+---
+
+Use this guide to authenticate and scope requests to the correct organization.
+
+## Get a token
+
+Use one of these endpoints to obtain a JWT:
+
+- `POST /api/auth/login`
+- `POST /api/msp/login`
+- `POST /api/employees/login`
+- `POST /api/employees/setup`
+
+Store the `token` value from the response and send it on every request that requires auth.
+
+```
+Authorization: Bearer <token>
+```
+
+## Pick an organization
+
+For user and MSP tokens, you can select an organization context with the `X-Organization-Id` header.
+
+```
+X-Organization-Id: <organization-id>
+```
+
+The API verifies that the authenticated user has access to this organization. If you omit the header, most routes fall back to the first org the user owns or manages.
+
+## Use employee tokens for employee-only routes
+
+Employee tokens include `employeeId` and only work with endpoints protected by `employeeAuth` middleware.
+
+If you call employee-only routes with a standard user token, you receive `401` errors.
+
+## SSE token flow
+
+`GET /api/organizations/:id/stream` uses a `token` query parameter because `EventSource` cannot send custom headers.
+
+```
+GET /api/organizations/<org-id>/stream?token=<jwt>
+```
+
+## Common auth errors
+
+- `Access token required` means you did not send `Authorization: Bearer <token>`.
+- `Invalid token` means the JWT is missing, expired, or signed with the wrong secret.
+- `Access denied to this organization` means the user does not have access to the org referenced in `X-Organization-Id`.

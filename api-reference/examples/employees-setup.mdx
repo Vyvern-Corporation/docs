@@ -1,0 +1,40 @@
+---
+title: 'Complete employee setup'
+description: 'Example request and response for POST /api/employees/setup.'
+---
+
+## Request
+
+```bash
+curl -s -X POST http://localhost:5000/api/employees/setup \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "token":"<invite-token>",
+    "password":"example-pass",
+    "consentData": {
+      "agreed": true,
+      "signature": "Riley Nguyen",
+      "ipAddress": "203.0.113.10",
+      "userAgent": "Mozilla/5.0"
+    }
+  }'
+```
+
+## Response
+
+```json
+{
+  "message": "Employee setup completed successfully",
+  "token": "<employee-jwt>",
+  "employee": {
+    "id": "emp_123",
+    "firstName": "Riley",
+    "lastName": "Nguyen",
+    "email": "riley@acme.example",
+    "department": "Finance",
+    "position": "Analyst",
+    "status": "ACTIVE",
+    "joinedAt": "2026-02-19T18:00:00.000Z"
+  }
+}
+```

@@ -1,0 +1,52 @@
+---
+title: 'Organization setup'
+description: 'Create and configure organizations, branding, and auto-generation.'
+---
+
+Use this guide to create and configure organizations for your account.
+
+## Create an organization
+
+Call `POST /api/organizations` with your org metadata and solution types. The response includes predictive billing totals.
+
+Required fields:
+
+- `organizationName`
+- `userCount`
+- `hrmPlatform`
+- `solutionTypes`
+- `hasSocialPresence`
+
+## View the current organization
+
+Call `GET /api/organizations/me` to load the default org for the user.
+
+If you manage multiple orgs, set `X-Organization-Id` to return a specific org.
+
+## Update branding
+
+Call `PUT /api/organizations/:id/settings` to update name, description, colors, and website URL.
+
+For logo uploads, use `POST /api/organizations/:id/logo` with `multipart/form-data` and a `logo` file.
+
+## Configure auto-generation
+
+Call `PUT /api/organizations/:id/auto-generation-settings` to control proposal auto-generation.
+
+Valid intervals:
+
+- `hourly`
+- `every_6_hours`
+- `daily`
+- `weekly`
+
+Valid proposal types:
+
+- `market_analysis`
+- `process_improvement`
+- `technology_audit`
+- `employee_research`
+
+## Manually trigger proposal generation
+
+Call `POST /api/organizations/:id/generate-proposals` when you want to generate proposals on demand.

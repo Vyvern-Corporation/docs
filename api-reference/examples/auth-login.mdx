@@ -1,0 +1,29 @@
+---
+title: 'Log in a user'
+description: 'Example request and response for POST /api/auth/login.'
+---
+
+## Request
+
+```bash
+curl -s -X POST http://localhost:5000/api/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "email":"admin@example.com",
+    "password":"example-pass"
+  }'
+```
+
+## Response
+
+```json
+{
+  "message": "Login successful",
+  "token": "<jwt>",
+  "user": {
+    "id": "usr_123",
+    "email": "admin@example.com",
+    "name": "Alex Admin"
+  }
+}
+```

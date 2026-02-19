@@ -1,0 +1,26 @@
+---
+title: 'Approve and start a workflow'
+description: 'Example request and response for POST /api/workflows/:id/approve.'
+---
+
+## Request
+
+```bash
+curl -s -X POST http://localhost:5000/api/workflows/wf_123/approve \
+  -H 'Authorization: Bearer <token>' \
+  -H 'Content-Type: application/json' \
+  -H 'X-Organization-Id: <org-id>' \
+  -d '{
+    "autoStart": true
+  }'
+```
+
+## Response
+
+```json
+{
+  "message": "Workflow approved and execution started",
+  "workflowId": "wf_123",
+  "status": "ACTIVE"
+}
+```

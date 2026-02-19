@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Vyvern",
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -14,7 +14,7 @@
         "tab": "Guides",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Overview",
             "pages": [
               "index",
               "quickstart",
@@ -22,27 +22,16 @@
             ]
           },
           {
-            "group": "Customization",
+            "group": "Guides",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
-            ]
-          },
-          {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "guides/auth-and-scoping",
+              "guides/organization-setup",
+              "guides/employee-onboarding",
+              "guides/workflow-lifecycle",
+              "guides/training-operations",
+              "guides/oauth-integrations",
+              "guides/msp-operations",
+              "guides/admin-operations"
             ]
           }
         ]
@@ -53,22 +42,17 @@
           {
             "group": "API documentation",
             "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Vyvern backend",
-            "pages": [
+              "api-reference/introduction",
               "api-reference/backend/overview",
               "api-reference/backend/middleware",
               "api-reference/backend/auth",
-              "api-reference/backend/admin",
-              "api-reference/backend/msp",
               "api-reference/backend/organizations",
               "api-reference/backend/employees",
               "api-reference/backend/workflows",
               "api-reference/backend/training",
               "api-reference/backend/oauth",
+              "api-reference/backend/msp",
+              "api-reference/backend/admin",
               "api-reference/backend/sales",
               "api-reference/backend/dev"
             ]
@@ -76,46 +60,29 @@
           {
             "group": "Endpoint examples",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/examples/auth-register",
+              "api-reference/examples/auth-login",
+              "api-reference/examples/organizations-create",
+              "api-reference/examples/organizations-update-branding",
+              "api-reference/examples/employees-invite",
+              "api-reference/examples/employees-setup",
+              "api-reference/examples/workflows-generate-proposal",
+              "api-reference/examples/workflows-approve",
+              "api-reference/examples/training-assign-from-failure",
+              "api-reference/examples/oauth-authorize",
+              "api-reference/examples/msp-create-organization"
             ]
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
+    ]
   },
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg"
   },
   "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
+    "links": []
   },
   "contextual": {
     "options": [
@@ -129,11 +96,5 @@
      "vscode"
    ]
   },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
-  }
+  "footer": {}
 }

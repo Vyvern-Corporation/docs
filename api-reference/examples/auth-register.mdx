@@ -1,0 +1,35 @@
+---
+title: 'Register a user'
+description: 'Example request and response for POST /api/auth/register.'
+---
+
+## Request
+
+```bash
+curl -s -X POST http://localhost:5000/api/auth/register \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "email":"admin@example.com",
+    "password":"example-pass",
+    "name":"Alex Admin",
+    "betaCode":"MainlineHealth"
+  }'
+```
+
+## Response
+
+```json
+{
+  "message": "User created successfully",
+  "token": "<jwt>",
+  "user": {
+    "id": "usr_123",
+    "email": "admin@example.com",
+    "name": "Alex Admin"
+  }
+}
+```
+
+<Note>
+  The current beta code check in `backend/routes/auth.js` uses an `OR` condition that rejects all values. Fix that logic before using this endpoint in production.
+</Note>

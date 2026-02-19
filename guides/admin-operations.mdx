@@ -1,0 +1,65 @@
+---
+title: 'Admin operations'
+description: 'Manage users, credentials, and jobs as a Vyvern admin.'
+---
+
+Use this guide for admin-only operations. Most endpoints live under `/api/admin`.
+
+## User management
+
+Common operations:
+
+- `GET /api/admin/users` to list users.
+- `POST /api/admin/mint/admin` to create an admin account.
+- `POST /api/admin/mint/msp` to create an MSP account.
+- `PATCH /api/admin/users/:userId/role` to set roles.
+- `PATCH /api/admin/users/:userId/user-type` to update user types.
+- `PATCH /api/admin/users/:userId/reset-password` to reset user passwords.
+
+## Employee management
+
+Use these endpoints when you need cross-org access:
+
+- `GET /api/admin/employees`
+- `PATCH /api/admin/employees/:id`
+- `PATCH /api/admin/employees/:id/reset-password`
+- `DELETE /api/admin/employees/:id`
+
+## Organization management
+
+Use these endpoints to manage orgs across the system:
+
+- `GET /api/admin/organizations`
+- `PATCH /api/admin/organizations/:id`
+- `PATCH /api/admin/organizations/:id/owner`
+- `DELETE /api/admin/organizations/:organizationId/wipe-data`
+
+## Ghost workflow controls
+
+Use ghost endpoints to inspect and override workflows across orgs:
+
+- `POST /api/admin/workflows`
+- `GET /api/admin/workflows`
+- `GET /api/admin/workflows/:id`
+- `PATCH /api/admin/workflows/:id/ghost`
+
+## MCP credentials
+
+Manage encrypted credentials for MCP integrations:
+
+- `GET /api/admin/credentials`
+- `GET /api/admin/credentials/:service`
+- `POST /api/admin/credentials`
+- `POST /api/admin/credentials/:service/totp`
+- `DELETE /api/admin/credentials/:service`
+
+These endpoints require `MCP_CREDENTIALS_KEY` and write to `MCP_CREDENTIALS_FILE`.
+
+## Jobs dashboard
+
+- `GET /api/admin/jobs` returns an HTML dashboard secured by HTTP Basic Auth.
+- `GET /api/admin/jobs/status` returns JSON job status.
+
+## Access control note
+
+`vyvernAdminMiddleware` currently allows all authenticated users because the role check is commented out in `backend/routes/admin.js`. Tighten that middleware before using these routes in production.

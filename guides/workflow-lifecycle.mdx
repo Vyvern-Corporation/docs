@@ -1,0 +1,42 @@
+---
+title: 'Workflow lifecycle'
+description: 'Create proposals, approve workflows, and manage execution.'
+---
+
+Use this guide to work with workflows and proposals.
+
+## Create a proposal
+
+There are two common paths:
+
+- `POST /api/workflows` to create a workflow proposal directly.
+- `POST /api/workflows/generate-proposal` to request an AI-generated proposal.
+
+Both paths create workflows in `DRAFT` status.
+
+## Review and approve
+
+Approve or reject proposals:
+
+- `POST /api/workflows/:id/approve`
+- `POST /api/workflows/:id/reject`
+
+If you approve with `autoStart: true`, the workflow moves to `ACTIVE` and starts executing.
+
+## Execute and manage
+
+Use these endpoints to control execution:
+
+- `POST /api/workflows/:id/start` to start an `APPROVED` workflow.
+- `POST /api/workflows/:id/pause` to pause an `ACTIVE` workflow.
+- `POST /api/workflows/:id/resume` to resume a `PAUSED` workflow.
+
+## Monitor status
+
+Call `GET /api/workflows` to list workflows and filter by status, type, or priority.
+
+Call `GET /api/workflows/stats/summary` to get totals by status for the organization.
+
+## Delete drafts
+
+You can only delete workflows in `DRAFT` status using `DELETE /api/workflows/:id`.

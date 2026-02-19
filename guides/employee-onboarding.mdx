@@ -1,0 +1,44 @@
+---
+title: 'Employee onboarding'
+description: 'Invite employees, complete setup, and manage status.'
+---
+
+Use this guide to onboard employees and manage their accounts.
+
+## Invite employees
+
+Call `POST /api/employees` to create an employee and send an invitation email. The response includes an `inviteUrl` you can share manually.
+
+Use `POST /api/employees/bulk` to create many employees in one request.
+
+## Verify and complete setup
+
+Employees follow the invite link and complete setup through the frontend. If you build your own flow, call these endpoints directly:
+
+- `GET /api/employees/verify-token/:token`
+- `POST /api/employees/setup`
+
+`POST /api/employees/setup` requires a password and a `consentData` object.
+
+## Employee login
+
+Employees authenticate using `POST /api/employees/login`. This returns an employee JWT you can use for employee-only routes.
+
+## Manage employee records
+
+Use these admin endpoints to manage employees:
+
+- `GET /api/employees` to list employees for the current org.
+- `PATCH /api/employees/:id` to update profile fields.
+- `PATCH /api/employees/:id/status` to update only the status.
+- `POST /api/employees/:id/resend-invitation` to resend an invite.
+
+## Reset passwords
+
+Employees can use the self-service reset flow:
+
+- `POST /api/employees/forgot-password`
+- `GET /api/employees/verify-reset-token/:token`
+- `POST /api/employees/reset-password`
+
+You can also reset a password as an admin using `PATCH /api/admin/employees/:id/reset-password`.

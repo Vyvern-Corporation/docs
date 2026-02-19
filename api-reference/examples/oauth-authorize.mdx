@@ -1,0 +1,23 @@
+---
+title: 'Start an OAuth flow'
+description: 'Example request and response for GET /api/oauth/:platform/authorize.'
+---
+
+## Request
+
+```bash
+curl -s -X GET "http://localhost:5000/api/oauth/gmail/authorize?organizationId=org_123" \
+  -H 'Authorization: Bearer <token>'
+```
+
+## Response
+
+```json
+{
+  "authUrl": "https://accounts.google.com/o/oauth2/v2/auth?..."
+}
+```
+
+## Next step
+
+Redirect the user to `authUrl` and let the backend handle the callback at `/api/oauth/gmail/callback`.

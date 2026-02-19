@@ -1,0 +1,35 @@
+---
+title: 'MSP create organization'
+description: 'Example request and response for POST /api/msp/organizations.'
+---
+
+## Request
+
+```bash
+curl -s -X POST http://localhost:5000/api/msp/organizations \
+  -H 'Authorization: Bearer <token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name":"Acme Co",
+    "websiteUrl":"https://acme.example",
+    "userCount":120,
+    "hrmPlatform":"Workday",
+    "solutionTypes":["email-phishing"],
+    "hasSocialPresence":true
+  }'
+```
+
+## Response
+
+```json
+{
+  "message": "Organization created and assigned to MSP",
+  "organization": {
+    "id": "org_123",
+    "name": "Acme Co",
+    "websiteUrl": "https://acme.example",
+    "userCount": 120,
+    "mspRole": "ADMIN"
+  }
+}
+```

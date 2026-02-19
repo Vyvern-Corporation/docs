@@ -1,0 +1,45 @@
+---
+title: 'Create an organization'
+description: 'Example request and response for POST /api/organizations.'
+---
+
+## Request
+
+```bash
+curl -s -X POST http://localhost:5000/api/organizations \
+  -H 'Authorization: Bearer <token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "organizationName":"Acme Co",
+    "userCount":120,
+    "hrmPlatform":"Workday",
+    "solutionTypes":["email-phishing","insider-risk"],
+    "hasSocialPresence":true,
+    "websiteUrl":"https://acme.example",
+    "authorizedPlatforms":["gmail","slack"]
+  }'
+```
+
+## Response
+
+```json
+{
+  "message": "Organization created successfully",
+  "organization": {
+    "id": "org_123",
+    "name": "Acme Co",
+    "userCount": 120,
+    "hrmPlatform": "Workday",
+    "solutionTypes": ["email-phishing", "insider-risk"],
+    "authorizedPlatforms": ["gmail", "slack"],
+    "websiteUrl": "https://acme.example",
+    "hasSocialPresence": true,
+    "researchStatus": "completed",
+    "predictiveBilling": {
+      "monthlyTotal": 180,
+      "annualTotal": 2160,
+      "annualWithDiscount": 1836
+    }
+  }
+}
+```

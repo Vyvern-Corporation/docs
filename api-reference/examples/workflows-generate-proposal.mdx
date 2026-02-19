@@ -1,0 +1,36 @@
+---
+title: 'Generate a workflow proposal'
+description: 'Example request and response for POST /api/workflows/generate-proposal.'
+---
+
+## Request
+
+```bash
+curl -s -X POST http://localhost:5000/api/workflows/generate-proposal \
+  -H 'Authorization: Bearer <token>' \
+  -H 'Content-Type: application/json' \
+  -H 'X-Organization-Id: <org-id>' \
+  -d '{
+    "proposalType":"market_analysis",
+    "targetCompany":"Acme Co",
+    "competitors":["Contoso"],
+    "focusArea":"email security",
+    "currentTech":"Google Workspace",
+    "priority":"HIGH"
+  }'
+```
+
+## Response
+
+```json
+{
+  "message": "Workflow proposal created successfully",
+  "workflow": {
+    "id": "wf_123",
+    "title": "AI Proposal: Market Analysis - Acme Co",
+    "status": "DRAFT",
+    "priority": "HIGH",
+    "workflowType": "MARKET_ANALYSIS"
+  }
+}
+```
