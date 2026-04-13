@@ -28,6 +28,7 @@
               "guides/organization-setup",
               "guides/employee-onboarding",
               "guides/workflow-lifecycle",
+              "guides/mcp-pilot-runbook",
               "guides/training-operations",
               "guides/oauth-integrations",
               "guides/msp-operations",
@@ -86,15 +87,15 @@
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {}
 }

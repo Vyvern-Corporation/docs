@@ -1,0 +1,82 @@
+---
+title: 'MCP pilot runbook'
+description: 'Prepare, validate, and roll back the customer-pilot MCP execution path.'
+---
+
+Use this runbook before letting a customer workflow execute with Vyvern-managed sourced accounts and browser profiles.
+
+## Required environment
+
+Set these values for the backend and the MCP credentials server:
+
+```bash
+MCP_CREDENTIALS_KEY=<strong-shared-master-key>
+MCP_CREDENTIALS_FILE=/absolute/path/to/credentials.enc
+HYPERBROWSER_API_KEY=<hyperbrowser-api-key>
+JWT_SECRET=<backend-jwt-secret>
+```
+
+Optional development-only flags:
+
+```bash
+VYVERN_ENABLE_DEV_TOOLS=true
+VYVERN_SEED_MODE=demo
+```
+
+`/api/dev` is disabled unless `VYVERN_ENABLE_DEV_TOOLS=true` or the backend is running in `development` or `test` mode.
+
+## Operator setup checklist
+
+1. Create or verify the credential entry in the MCP store.
+2. Create the sourced account record and attach it to the credential service.
+3. Create a browser profile for that sourced account.
+4. Add profile customization metadata the workflow should inherit.
+5. Confirm the profile is `active` before launching the workflow.
+
+## Validation steps
+
+Run the focused backend smoke tests from `/backend`:
+
+```bash
+npm run smoke:workflow-schema
+npm run smoke:workflow-controls
+npm run smoke:workflow-mcp
+```
+
+The MCP smoke test verifies:
+
+- a conflicting profile lease returns `BUSY`
+- workflow telemetry records safe MCP audit events
+- a successful workflow releases the profile lease
+- raw secrets do not appear in workflow results
+
+## Playwright pilot coverage
+
+Run the root Playwright suite for MCP pilot coverage:
+
+```bash
+npm test -- e2e/workflows/mcp-pilot.spec.ts
+```
+
+This suite covers the busy collision path and the managed-profile execution path.
+
+## Launch checks
+
+Before customer usage, confirm all of the following:
+
+1. `MCP_CREDENTIALS_KEY` matches between backend and MCP server.
+2. `MCP_CREDENTIALS_FILE` points to the same encrypted store for both services.
+3. The target browser profile has no active lease.
+4. The workflow definition includes `workflowData.mcpContext.profileId`.
+5. The backend can reach Hyperbrowser.
+6. The latest workflow execution finishes without secret leakage in `executionResults`.
+
+## Rollback
+
+If the pilot path misbehaves:
+
+1. Pause new workflow approvals.
+2. Stop the backend worker process.
+3. Inspect the encrypted MCP store for active leases and release any orphaned lease.
+4. Re-run `npm run smoke:workflow-mcp` after the fix.
+5. Keep `/api/dev` disabled unless you are actively debugging in a safe environment.
